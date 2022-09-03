@@ -17,66 +17,66 @@ public class CFUtils {
         return (char) (character - 'L' + '0');
     }
 
-    static String calcolaCognome(String cognome) {
-        cognome = cognome.toUpperCase(Locale.ITALIAN);
-        String risultato = "";
-        for (int i = 0; i < cognome.length() && risultato.length() < 3; i++) {
-            char lettera = cognome.charAt(i);
-            if (isConsonant(lettera)) {
-                risultato += lettera;
+    static String calculateSurname(String surname) {
+        surname = surname.toUpperCase(Locale.ITALIAN);
+        String result = "";
+        for (int i = 0; i < surname.length() && result.length() < 3; i++) {
+            char c = surname.charAt(i);
+            if (isConsonant(c)) {
+                result += c;
             }
         }
-        if (risultato.length() == 3) {
-            return risultato;
+        if (result.length() == 3) {
+            return result;
         }
-        for (int i = 0; i < cognome.length() && risultato.length() < 3; i++) {
-            char lettera = cognome.charAt(i);
-            if (isVowel(lettera)) {
-                risultato += lettera;
+        for (int i = 0; i < surname.length() && result.length() < 3; i++) {
+            char c = surname.charAt(i);
+            if (isVowel(c)) {
+                result += c;
             }
         }
-        if (risultato.length() == 3) {
-            return risultato;
+        if (result.length() == 3) {
+            return result;
         }
-        while (risultato.length() < 3) {
-            risultato += 'X';
+        while (result.length() < 3) {
+            result += 'X';
         }
-        return risultato;
+        return result;
     }
 
-    static String calcolaNome(String nome) {
-        nome = nome.toUpperCase(Locale.ITALIAN);
-        char[] nomeArray = nome.toCharArray();
-        String risultato = "";
-        String consonanti = "";
-        for (char lettera : nomeArray) {
-            if (isConsonant(lettera)) {
-                consonanti += lettera;
+    static String calculateName(String firstName) {
+        firstName = firstName.toUpperCase(Locale.ITALIAN);
+        char[] nomeArray = firstName.toCharArray();
+        String result = "";
+        String consonants = "";
+        for (char c : nomeArray) {
+            if (isConsonant(c)) {
+                consonants += c;
             }
         }
-        if (consonanti.length() > 3) {
-            risultato += consonanti.charAt(0);
-            risultato += consonanti.charAt(2);
-            risultato += consonanti.charAt(3);
-            return risultato;
+        if (consonants.length() > 3) {
+            result += consonants.charAt(0);
+            result += consonants.charAt(2);
+            result += consonants.charAt(3);
+            return result;
         }
-        if (consonanti.length() == 3) {
-            return consonanti;
+        if (consonants.length() == 3) {
+            return consonants;
         }
-        risultato = consonanti;
-        for (int i = 0; i < nome.length() && risultato.length() < 3; i++) {
-            char lettera = nome.charAt(i);
-            if (isVowel(lettera)) {
-                risultato += lettera;
+        result = consonants;
+        for (int i = 0; i < firstName.length() && result.length() < 3; i++) {
+            char c = firstName.charAt(i);
+            if (isVowel(c)) {
+                result += c;
             }
         }
-        if (risultato.length() == 3) {
-            return risultato;
+        if (result.length() == 3) {
+            return result;
         }
-        while (risultato.length() < 3) {
-            risultato += 'X';
+        while (result.length() < 3) {
+            result += 'X';
         }
-        return risultato;
+        return result;
     }
 
     private static boolean isVowel(char c) {
@@ -133,7 +133,7 @@ public class CFUtils {
         }
     }
 
-    static int valoreDispari(char c) {
+    static int oddValue(char c) {
         switch (c) {
             case '1':
                 return 0;
@@ -212,10 +212,11 @@ public class CFUtils {
         }
     }
 
-    static int valorePari(char c) {
+    static int evenValue(char c) {
         if (Character.isDigit(c)) {
             return c - '0';
         }
+        
         if (c >= 'A' && c <= 'Z') {
             return c - 'A';
         }
