@@ -1,7 +1,6 @@
 package dev.andreagenovese;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -30,6 +29,7 @@ import java.util.Map.Entry;
   }
 ORDER BY ?codice
  */
+@SuppressWarnings("all")
 public class CodiciCatastali {
     private static Map<String, String> map;
     static {
@@ -59,7 +59,6 @@ public class CodiciCatastali {
                 oos.writeObject(map);
                 oos.close();
 
-                
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);

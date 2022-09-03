@@ -1,15 +1,11 @@
-package com.andreagenovese;
+package dev.andreagenovese;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import dev.andreagenovese.CodiceFiscale;
-import dev.andreagenovese.CodiciCatastali;
-import dev.andreagenovese.Person;
-
 /**
  * Unit test for simple App.
  */
-public class AppTest {
+public class Tests {
     Person p = new Person("Andrea Giovanni", "Genovese", true, 13, 7, 2001, "I690");
 
     @Test
