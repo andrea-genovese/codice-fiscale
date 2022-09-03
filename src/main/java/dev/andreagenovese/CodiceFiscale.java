@@ -5,17 +5,46 @@ import static dev.andreagenovese.CFUtils.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * CodiceFiscale
+ * The {@code CodiceFiscale} class contains several methods to calculate an
+ * Italian fiscal code and its variants.
+ * Note that the only legally valid fiscal code is the one issued by
+ * the Italian fiscal authority and, while the standard algorithm is correctly
+ * implemented,
+ * the calculated code may differ from the issued one, for example in case of
+ * two people having the same code
+ * 
+ * @author Andrea Genovese
  */
 public class CodiceFiscale {
-    // the indexes of digits
-    private static byte[] digitIdxs = { 14, 13, 12, 10, 9, 7, 6 };
+    // the indexes at which there are digits in reverse order
+    private static final byte[] digitIdxs = { 14, 13, 12, 10, 9, 7, 6 };
 
-    public static String calculate(String name, String surname, boolean isMale,
+    /**
+     * This method calculate the fiscal code with the standard algorithm. Be aware
+     * that in case of people with the same fiscal code the fiscal code may be
+     * changed.
+     * If you need many possible fiscal codes for a person, use
+     * {@link CodiceFiscale#calculate(Person, byte) calculate(Person, byte)} or
+     * {@link CodiceFiscale#calculateAll(Person) calculateAll(Person)}
+     * 
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @return Codice Fiscale calculated with the standard algorithm
+     * @see <a href=
+     *      "https://it.wikipedia.org/wiki/Codice_catastale#Codice_nazionale">Codice
+     *      Catastale Nazionale</a>
+     */
+    public static String calculate(String firstName, String surname, boolean isMale,
             int day, int month, int year, String codiceCatastale) {
-        String CF = calcolaCognome(surname) + calcolaNome(name);
+        String CF = calculateSurname(surname) + calculateName(firstName);
         CF += pad2(year);
         CF += getMonthChar(month);
         if (!isMale) {
@@ -27,11 +56,45 @@ public class CodiceFiscale {
         return CF;
     }
 
+    /**
+     * This method calculate the fiscal code with the standard algorithm. Be aware
+     * that in case of people with the same fiscal code the fiscal code may be
+     * changed.
+     * If you need many possible fiscal codes for a person, use
+     * {@link CodiceFiscale#calculate(Person, byte) calculate(Person, byte)} or
+     * {@link CodiceFiscale#calculateAll(Person) calculateAll(Person)}
+     * 
+     * @param p The person the Fiscal Code belongs to
+     * @return Codice Fiscale calculated with the standard algorithm
+     */
     public static String calculate(Person p) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(), p.getYearOfBirth(),
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
+                p.getYearOfBirth(),
                 p.getPlaceOfBirth());
     }
 
+    /**
+     * This method calculate the fiscal code and some variations (max 127) of it for
+     * the same person, ordered in the order the "Agenzia delle Entrate" would
+     * assign them.
+     * 
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @param variations      the number of variation of the standard fiscal code (0
+     *                        return a list with only the standard code)
+     * @return A {@code List} of fiscal codes ordered in the order they would be
+     *         assigned
+     * @see <a href=
+     *      "https://it.wikipedia.org/wiki/Codice_catastale#Codice_nazionale">Codice
+     *      Catastale Nazionale</a>
+     */
     public static List<String> calculate(String name, String surname, boolean isMale,
             int day, int month, int year, String codiceCatastale, byte variations) {
 
@@ -46,21 +109,82 @@ public class CodiceFiscale {
 
     }
 
+    /**
+     * This method calculate the fiscal code and some variations (max 127) of it for
+     * the same person, ordered in the order the "Agenzia delle Entrate" would
+     * assign them.
+     * 
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @param variations      the number of variation of the standard fiscal code (0
+     *                        return a list with only the standard code)
+     * @return A {@code List} of fiscal codes ordered in the order they would be
+     *         assigned
+     */
     public static List<String> calculate(Person p, byte variations) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(), p.getDayOfBirth(),
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
+                p.getDayOfBirth(),
                 p.getPlaceOfBirth(), variations);
     }
 
+    /**
+     * This method calculate the fiscal code and all 127 variations of it for
+     * the same person, ordered in the order the "Agenzia delle Entrate" would
+     * assign them.
+     * 
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @return A {@code List} of fiscal codes ordered in the order they would be
+     *         assigned
+     * @see <a href=
+     *      "https://it.wikipedia.org/wiki/Codice_catastale#Codice_nazionale">
+     *      Codice Catastale Nazionale</a>
+     */
     public static List<String> calculateAll(String name, String surname, boolean isMale,
             int day, int month, int year, String codiceCatastale) {
         return calculate(name, surname, isMale, day, month, year, codiceCatastale, (byte) 127);
     }
 
     public static List<String> calculateAll(Person p) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(), p.getDayOfBirth(),
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
+                p.getDayOfBirth(),
                 p.getPlaceOfBirth(), (byte) 127);
     }
 
+    /**
+     * This method extracts the following informations from a fiscal code:
+     * <ul>
+     * <li>3 characters from the first name</li>
+     * <li>3 characters from the surname</li>
+     * <li>Gender</li>
+     * <li>Date of birth (year is in 2-digit format)</li>
+     * <li>{@link CodiceCatastale} of the place of birth</li>
+     * </ul>
+     * 
+     * @param CF the fiscal code
+     * @return The {@code Person} the code belongs to (only 3 character from
+     *         name and surname are available)
+     * @throws InvalidControlCodeException If the control code (the last letter) is
+     *                                     different from the expected one
+     * @throws WrongLengthException        If the fiscal code length is not 16
+     * @see <a href=
+     *      "https://it.wikipedia.org/wiki/Codice_catastale#Codice_nazionale">
+     *      Codice Catastale Nazionale</a>
+     */
     public static Person revert(String CF) throws InvalidControlCodeException, WrongLengthException {
         verifyControlChar(CF);
         CF = toStandardCF(CF);
@@ -79,6 +203,16 @@ public class CodiceFiscale {
         return new Person(name, surname, isMale, day, month, year, placeOfBirthCode);
     }
 
+    /**
+     * This method returns many variations of the same fiscal code in the order they
+     * would be assigned to people with the same code
+     * 
+     * @param CF         A standard fiscal code
+     * @param variations The number of variations needed (max 127)
+     * @return A {@code List} of fiscal codes
+     * @throws InvalidControlCodeException If the control code (the last letter) is
+     *                                     different from the expected one
+     */
     public static List<String> variations(String CF, byte variations) throws InvalidControlCodeException {
 
         if (variations < 0) {
@@ -93,16 +227,46 @@ public class CodiceFiscale {
         return CFs;
     }
 
-    public static boolean test(String CF, Person p) throws InvalidControlCodeException {
-        return test(CF, p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(), p.getDayOfBirth(),
+    /**
+     * Test whether a fiscal code may appertain to a certain person
+     * 
+     * @param CF              the fiscal code
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @return {@code true} if the code may belong to the person, {@code false}
+     *         otherwise
+     */
+    public static boolean test(String CF, Person p) {
+        return test(CF, p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
+                p.getDayOfBirth(),
                 p.getPlaceOfBirth());
     }
 
+    /**
+     * Test whether a fiscal code may appertain to a certain person
+     * 
+     * @param CF              the fiscal code
+     * @param firstName
+     * @param surname
+     * @param isMale
+     * @param day             the day of birth
+     * @param month           the month of birth (January is 1)
+     * @param year            the year of birth (2-digits and 4-digits are both
+     *                        accepted)
+     * @param codiceCatastale 4 character Codice Belfiore of the place of birth
+     *                        (Italian town or foreign country)
+     * @return {@code true} if the code may belong to the person, {@code false}
+     *         otherwise
+     */
     public static boolean test(String CF, String name, String surname, boolean isMale, int dayOfBirth, int monthOfBirth,
             int yearOfBirth, String placeOfBirth) {
-        if (CF.length() != 16) {
-            return false;
-        }
         try {
             verifyControlChar(CF);
         } catch (InvalidControlCodeException | WrongLengthException e) {
@@ -148,8 +312,6 @@ public class CodiceFiscale {
      * This method add to {@code CFs}, in the order specified by Agenzia Delle
      * Entrate all the variations of the given fiscal code
      * {@code CF} that change a given number of characters.
-     * The variations are ordered by likeliness to be assigned in case of people
-     * having the same code (Omocodia).
      * 
      * @see https://www.agenziaentrate.gov.it/portale/web/guest/schede/istanze/richiesta-ts_cf/informazioni-codificazione-pf
      * 
@@ -175,7 +337,7 @@ public class CodiceFiscale {
         }
     }
 
-    public static String calculateVariation(char[] CFarr, int[] indexesToChange) {
+    private static String calculateVariation(char[] CFarr, int[] indexesToChange) {
         for (int idx : indexesToChange) {
             int realIdx = digitIdxs[idx];
             CFarr[realIdx] = transformDigit(CFarr[realIdx]);
@@ -184,15 +346,15 @@ public class CodiceFiscale {
         return newCF + controlChar(newCF);
     }
 
-    public static char controlChar(String CF) {
-        int somma = 0;
+    private static char controlChar(String CF) {
+        int sum = 0;
         for (int i = 0; i < CF.length(); i += 2) {
-            somma += valoreDispari(CF.charAt(i));
+            sum += oddValue(CF.charAt(i));
         }
         for (int i = 1; i < CF.length() && i < 15; i += 2) {
-            somma += valorePari(CF.charAt(i));
+            sum += evenValue(CF.charAt(i));
         }
-        return (char) ('A' + somma % 26);
+        return (char) ('A' + sum % 26);
     }
 
 }
