@@ -30,11 +30,11 @@ import java.util.Map.Entry;
 ORDER BY ?codice
  */
 @SuppressWarnings("all")
-public class CodiciCatastali {
+public class CodiceCatastale {
     private static Map<String, String> map;
     static {
         map = new HashMap<String, String>();
-        ClassLoader classLoader = CodiciCatastali.class.getClassLoader();
+        ClassLoader classLoader = CodiceCatastale.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream("codiciCatastali.ser");
         try {
             ObjectInputStream objInput = new ObjectInputStream(inputStream);
