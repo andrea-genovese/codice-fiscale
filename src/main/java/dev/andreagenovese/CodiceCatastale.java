@@ -2,10 +2,12 @@ package dev.andreagenovese;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -29,6 +31,12 @@ import java.util.Map.Entry;
   }
 ORDER BY ?codice
  */
+/**
+ * This class contains methods to get the Codice Catastale Nazionale (also known
+ * as Codice Belfiore) assigned to geographical entities (Comuni and
+ * countries) and viceversa
+ * 
+ */
 @SuppressWarnings("all")
 public class CodiceCatastale {
     private static Map<String, String> map;
@@ -41,37 +49,52 @@ public class CodiceCatastale {
             Object obj = objInput.readObject();
             map = (Map<String, String>) obj;
 
-        } catch (Exception e1) {
+        } catch (IOException | ClassNotFoundException e1) {
             e1.printStackTrace();
             try {
-                System.out.println("codiciCatastali.ser not found");
-                Map<String, String> parsedFile = new HashMap<>();
-                URI uri = classLoader.getResource("codiciCatastali.csv").toURI();
-
-                Scanner sc = new Scanner(new File(uri), "UTF-8");
-                while (sc.hasNextLine()) {
-                    String[] comuneData = sc.nextLine().split(",");
-                    parsedFile.put(comuneData[0].toUpperCase(Locale.ITALIAN), comuneData[1]);
-                }
-                FileOutputStream fos = new FileOutputStream("codiciCatastali.ser");
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                map = parsedFile;
-                oos.writeObject(map);
-                oos.close();
-
-            } catch (Exception e) {
+                map = parseFile("codiciCatastali.csv");
+            } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
-                System.exit(1);
             }
         }
 
     }
 
+    private static Map<String, String> parseFile(String fileName) throws IOException, URISyntaxException {
+        Map<String, String> parsedFile = new HashMap<>();
+        InputStream stream = CodiceCatastale.class.getClassLoader().getResourceAsStream(fileName);
+
+        Scanner sc = new Scanner(stream, "UTF-8");
+        while (sc.hasNextLine()) {
+            String[] columns = sc.nextLine().split(",");
+            parsedFile.put(columns[0].toUpperCase(Locale.ITALIAN), columns[1].toUpperCase(Locale.ITALIAN));
+        }
+        FileOutputStream fos = new FileOutputStream("codiciCatastali.ser");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(map);
+        oos.close();
+        return parsedFile;
+
+    }
+
+    /**
+     * This method returns the Codice Catastale for a given geographical name (case
+     * insensitive)
+     * 
+     * 
+     * @param luogo name of the entity
+     * @return The corresponding Codice Catastale
+     */
     public static String getCodiceCatastale(String luogo) {
         return map.get(luogo.toUpperCase(Locale.ITALIAN));
     }
-
+    /**This method returns the name of an entity based on the supplied code
+     * 
+     * @param code A Codice Catastale
+     * @return The name of the entity
+     */
     public static String getName(String code) {
+        code = code.toUpperCase(Locale.ITALIAN);
         for (Entry<String, String> entry : map.entrySet()) {
             if (code.equals(entry.getValue())) {
                 return entry.getKey();
