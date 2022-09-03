@@ -22,12 +22,12 @@ public class Tests {
     }
     @Test
     public void comune(){
-        assertEquals("I690", CodiciCatastali.getCodiceCatastale("Sesto San Giovanni"));
+        assertEquals("I690", CodiceCatastale.getCodiceCatastale("Sesto San Giovanni"));
     }
     @Test
     public void stato(){
-        assertEquals("Z102", CodiciCatastali.getCodiceCatastale("Austria"));
-        assertEquals("GERMANIA", CodiciCatastali.getName("Z112"));
+        assertEquals("Z102", CodiceCatastale.getCodiceCatastale("Austria"));
+        assertEquals("GERMANIA", CodiceCatastale.getName("Z112"));
     }
 
 
