@@ -1,4 +1,4 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
 public class InvalidControlCodeException extends Exception {
 

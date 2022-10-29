@@ -3,6 +3,10 @@ package dev.andreagenovese;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
+import dev.andreagenovese.CodiceFiscale.CodiceCatastale;
+import dev.andreagenovese.CodiceFiscale.CodiceFiscale;
+import dev.andreagenovese.CodiceFiscale.Person;
+
 public class Tests {
     Person p = new Person("Andrea Giovanni", "Genovese", true, 13, 7, 2001, "I690");
 

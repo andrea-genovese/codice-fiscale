@@ -1,6 +1,6 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
-import static dev.andreagenovese.CFUtils.*;
+import static dev.andreagenovese.CodiceFiscale.CFUtils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -346,7 +346,7 @@ public class CodiceFiscale {
         return newCF + controlChar(newCF);
     }
 
-    static char controlChar(String CF) {
+    public static char controlChar(String CF) {
         int sum = 0;
         for (int i = 0; i < CF.length(); i += 2) {
             sum += oddValue(CF.charAt(i));

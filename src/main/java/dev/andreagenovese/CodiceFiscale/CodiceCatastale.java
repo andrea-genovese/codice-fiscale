@@ -1,4 +1,4 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
 import java.io.File;
 import java.io.FileOutputStream;

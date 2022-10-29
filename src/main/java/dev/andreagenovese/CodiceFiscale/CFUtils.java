@@ -1,4 +1,4 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
 import java.util.Locale;
 

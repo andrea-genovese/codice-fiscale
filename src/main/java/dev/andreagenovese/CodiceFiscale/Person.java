@@ -1,4 +1,4 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
 public class Person {
         private String name;
