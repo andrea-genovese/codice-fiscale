@@ -346,7 +346,7 @@ public class CodiceFiscale {
         return newCF + controlChar(newCF);
     }
 
-    private static char controlChar(String CF) {
+    static char controlChar(String CF) {
         int sum = 0;
         for (int i = 0; i < CF.length(); i += 2) {
             sum += oddValue(CF.charAt(i));
