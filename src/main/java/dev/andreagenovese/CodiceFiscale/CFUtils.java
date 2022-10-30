@@ -216,7 +216,7 @@ public class CFUtils {
         if (Character.isDigit(c)) {
             return c - '0';
         }
-        
+
         if (c >= 'A' && c <= 'Z') {
             return c - 'A';
         }
@@ -263,6 +263,7 @@ public class CFUtils {
                 return 12;
             default:
                 throw new RuntimeException("Invalid month: " + month);
+           
         }
     }
 }
