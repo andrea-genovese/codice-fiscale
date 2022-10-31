@@ -15,11 +15,9 @@ public class Surnames {
         try (ObjectInputStream ois = new ObjectInputStream(
                 Surnames.class.getClassLoader().getResourceAsStream("surnames.ser"))) {
             list = (List<String>) ois.readObject();
-            System.out.println("loaded from ser");
         } catch (Exception e1) {
             e1.printStackTrace();
             loadFromCSV();
-            System.out.println("loaded from csv");
             try (ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream("./src/main/resources/surnames.ser"))) {
                 oos.writeObject(list);

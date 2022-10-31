@@ -18,7 +18,6 @@ public class Names {
                 Names.class.getClassLoader().getResourceAsStream("names.ser"))) {
             maleNames = (Map<String, Integer>) ois.readObject();
             femaleNames = (Map<String, Integer>) ois.readObject();
-            System.out.println("Loaded from names.ser");
         } catch (NullPointerException | IOException | ClassNotFoundException e1) {
             e1.printStackTrace();
 
