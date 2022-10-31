@@ -39,7 +39,6 @@ public class Tests {
     @Test
     public void revertion(){
         TreeMap<Double, String> map = CodiceFiscale.revert("GNVNRG01L13I690I").getNames();
-        System.out.println(map);
         assertNotNull(map);
     }
 
