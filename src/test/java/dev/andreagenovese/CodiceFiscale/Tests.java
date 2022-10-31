@@ -1,11 +1,12 @@
-package dev.andreagenovese;
+package dev.andreagenovese.CodiceFiscale;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.TreeMap;
+
 import org.junit.Test;
 
-import dev.andreagenovese.CodiceFiscale.CodiceCatastale;
-import dev.andreagenovese.CodiceFiscale.CodiceFiscale;
-import dev.andreagenovese.CodiceFiscale.Person;
 
 public class Tests {
     Person p = new Person("Andrea Giovanni", "Genovese", true, 13, 7, 2001, "I690");
@@ -14,7 +15,13 @@ public class Tests {
     public void controlChar() {
         assertEquals('I', CodiceFiscale.controlChar("GNVNRG01L13I690"));
     }
-
+    @Test
+    public void names(){
+        System.out.println(Names.maleNames);
+        System.out.println(Names.femaleNames);
+        assertNotNull(Names.maleNames);
+        assertNotNull(Names.femaleNames);        
+    }
     
     @Test
     public void codiceFiscale() {
@@ -29,6 +36,11 @@ public class Tests {
         assertEquals("Z102", CodiceCatastale.getCodiceCatastale("Austria"));
         assertEquals("GERMANIA", CodiceCatastale.getName("Z112"));
     }
-
+    @Test
+    public void revertion(){
+        TreeMap<Double, String> map = CodiceFiscale.revert("GNVNRG01L13I690I").getNames();
+        System.out.println(map);
+        assertNotNull(map);
+    }
 
 }

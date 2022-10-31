@@ -51,6 +51,9 @@ public class CodiceFiscale {
             day += 40;
         }
         CF += pad2(day);
+        if(codiceCatastale == null) {
+            throw new NullPointerException("codiceCatastale cannot be null");
+        }
         CF += codiceCatastale;
         CF += controlChar(CF);
         return CF;
@@ -185,7 +188,7 @@ public class CodiceFiscale {
      *      "https://it.wikipedia.org/wiki/Codice_catastale#Codice_nazionale">
      *      Codice Catastale Nazionale</a>
      */
-    public static Person revert(String CF) throws InvalidControlCodeException, WrongLengthException {
+    public static RevertionResult revert(String CF) throws InvalidControlCodeException, WrongLengthException {
         verifyControlChar(CF);
         CF = toStandardCF(CF);
         String surname = CF.substring(0, 3);
@@ -200,7 +203,7 @@ public class CodiceFiscale {
         }
         String placeOfBirthCode = CF.substring(11, 15);
 
-        return new Person(name, surname, isMale, day, month, year, placeOfBirthCode);
+        return new RevertionResult(name, surname, isMale, day, month, year, placeOfBirthCode);
     }
 
     /**
