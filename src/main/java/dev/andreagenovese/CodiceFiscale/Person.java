@@ -1,21 +1,18 @@
 package dev.andreagenovese.CodiceFiscale;
 
+import java.time.LocalDate;
+
 public class Person {
         private String name;
         private String surname;
         private boolean isMale;
-        private int dayOfBirth;
-        private int monthOfBirth;
-        private int yearOfBirth;
-        private String placeOfBirth;
-        public Person(String name, String surname, boolean isMale, int dayOfBirth, int monthOfBirth, int yearOfBirth,
-                        String placeOfBirth) {
+        private LocalDate dateOfBirth;
+        private CodiceCatastale placeOfBirth;
+        public Person(String name, String surname, boolean isMale, LocalDate dateOfBirth, CodiceCatastale placeOfBirth) {
                 this.name = name;
                 this.surname = surname;
                 this.isMale = isMale;
-                this.dayOfBirth = dayOfBirth;
-                this.monthOfBirth = monthOfBirth;
-                this.yearOfBirth = yearOfBirth;
+                this.dateOfBirth = dateOfBirth;
                 this.placeOfBirth = placeOfBirth;
         }
         public String getName() {
@@ -27,16 +24,10 @@ public class Person {
         public boolean isMale() {
                 return isMale;
         }
-        public int getDayOfBirth() {
-                return dayOfBirth;
+        public LocalDate getDateOfBirth() {
+                return dateOfBirth;
         }
-        public int getMonthOfBirth() {
-                return monthOfBirth;
-        }
-        public int getYearOfBirth() {
-                return yearOfBirth;
-        }
-        public String getPlaceOfBirth() {
+        public CodiceCatastale getPlaceOfBirth() {
                 return placeOfBirth;
         }
         

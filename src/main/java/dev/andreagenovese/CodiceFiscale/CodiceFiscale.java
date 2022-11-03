@@ -2,8 +2,10 @@ package dev.andreagenovese.CodiceFiscale;
 
 import static dev.andreagenovese.CodiceFiscale.CFUtils.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * The {@code CodiceFiscale} class contains several methods to calculate an
@@ -20,12 +22,24 @@ public class CodiceFiscale {
     // the indexes at which there are digits in reverse order
     private static final byte[] digitIdxs = { 14, 13, 12, 10, 9, 7, 6 };
 
+    public static String calculate(String firstName, String surname, boolean isMale,
+            LocalDate dateOfBirth, CodiceCatastale codiceCatastale) {
+        return calculate(firstName, surname, isMale, dateOfBirth.getDayOfMonth(), dateOfBirth.getMonthValue(),
+                dateOfBirth.getYear(), codiceCatastale);
+    }
+
+    public static List<String> calculate(String firstName, String surname, boolean isMale,
+            LocalDate dateOfBirth, CodiceCatastale codiceCatastale, int variations) {
+        return calculate(firstName, surname, isMale, dateOfBirth.getDayOfMonth(), dateOfBirth.getMonthValue(),
+                dateOfBirth.getYear(), codiceCatastale, variations);
+    }
+
     /**
      * This method calculate the fiscal code with the standard algorithm. Be aware
      * that in case of people with the same fiscal code the fiscal code may be
      * changed.
      * If you need many possible fiscal codes for a person, use
-     * {@link CodiceFiscale#calculate(Person, byte) calculate(Person, byte)} or
+     * {@link CodiceFiscale#calculate(Person, int) calculate(Person, int)} or
      * {@link CodiceFiscale#calculateAll(Person) calculateAll(Person)}
      * 
      * @param firstName
@@ -43,7 +57,7 @@ public class CodiceFiscale {
      *      Catastale Nazionale</a>
      */
     public static String calculate(String firstName, String surname, boolean isMale,
-            int day, int month, int year, String codiceCatastale) {
+            int day, int month, int year, CodiceCatastale codiceCatastale) {
         String CF = calculateSurname(surname) + calculateName(firstName);
         CF += pad2(year);
         CF += getMonthChar(month);
@@ -51,7 +65,7 @@ public class CodiceFiscale {
             day += 40;
         }
         CF += pad2(day);
-        if(codiceCatastale == null) {
+        if (codiceCatastale == null) {
             throw new NullPointerException("codiceCatastale cannot be null");
         }
         CF += codiceCatastale;
@@ -64,16 +78,14 @@ public class CodiceFiscale {
      * that in case of people with the same fiscal code the fiscal code may be
      * changed.
      * If you need many possible fiscal codes for a person, use
-     * {@link CodiceFiscale#calculate(Person, byte) calculate(Person, byte)} or
+     * {@link CodiceFiscale#calculate(Person, int) calculate(Person, int)} or
      * {@link CodiceFiscale#calculateAll(Person) calculateAll(Person)}
      * 
      * @param p The person the Fiscal Code belongs to
      * @return Codice Fiscale calculated with the standard algorithm
      */
     public static String calculate(Person p) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
-                p.getYearOfBirth(),
-                p.getPlaceOfBirth());
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDateOfBirth(), p.getPlaceOfBirth());
     }
 
     /**
@@ -99,7 +111,7 @@ public class CodiceFiscale {
      *      Catastale Nazionale</a>
      */
     public static List<String> calculate(String name, String surname, boolean isMale,
-            int day, int month, int year, String codiceCatastale, byte variations) {
+            int day, int month, int year, CodiceCatastale codiceCatastale, int variations) {
 
         String stdCF = calculate(name, surname, isMale, day, month, year, codiceCatastale);
 
@@ -131,9 +143,8 @@ public class CodiceFiscale {
      * @return A {@code List} of fiscal codes ordered in the order they would be
      *         assigned
      */
-    public static List<String> calculate(Person p, byte variations) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
-                p.getDayOfBirth(),
+    public static List<String> calculate(Person p, int variations) {
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDateOfBirth(),
                 p.getPlaceOfBirth(), variations);
     }
 
@@ -158,14 +169,13 @@ public class CodiceFiscale {
      *      Codice Catastale Nazionale</a>
      */
     public static List<String> calculateAll(String name, String surname, boolean isMale,
-            int day, int month, int year, String codiceCatastale) {
-        return calculate(name, surname, isMale, day, month, year, codiceCatastale, (byte) 127);
+            int day, int month, int year, CodiceCatastale codiceCatastale) {
+        return calculate(name, surname, isMale, day, month, year, codiceCatastale, 127);
     }
 
     public static List<String> calculateAll(Person p) {
-        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
-                p.getDayOfBirth(),
-                p.getPlaceOfBirth(), (byte) 127);
+        return calculate(p.getName(), p.getSurname(), p.isMale(), p.getDateOfBirth(),
+                p.getPlaceOfBirth(), 127);
     }
 
     /**
@@ -189,6 +199,7 @@ public class CodiceFiscale {
      *      Codice Catastale Nazionale</a>
      */
     public static RevertionResult revert(String CF) throws InvalidControlCodeException, WrongLengthException {
+        CF = CF.toUpperCase(Locale.ITALIAN);
         verifyControlChar(CF);
         CF = toStandardCF(CF);
         String surname = CF.substring(0, 3);
@@ -203,7 +214,7 @@ public class CodiceFiscale {
         }
         String placeOfBirthCode = CF.substring(11, 15);
 
-        return new RevertionResult(name, surname, isMale, day, month, year, placeOfBirthCode);
+        return new RevertionResult(name, surname, isMale, LocalDate.of(year, month, day), placeOfBirthCode);
     }
 
     /**
@@ -216,7 +227,7 @@ public class CodiceFiscale {
      * @throws InvalidControlCodeException If the control code (the last letter) is
      *                                     different from the expected one
      */
-    public static List<String> variations(String CF, byte variations) throws InvalidControlCodeException {
+    public static List<String> variations(String CF, int variations) throws InvalidControlCodeException {
 
         if (variations < 0) {
             throw new RuntimeException("variations must be non negative");
@@ -247,9 +258,17 @@ public class CodiceFiscale {
      *         otherwise
      */
     public static boolean test(String CF, Person p) {
-        return test(CF, p.getName(), p.getSurname(), p.isMale(), p.getDayOfBirth(), p.getMonthOfBirth(),
-                p.getDayOfBirth(),
+        return test(CF, p.getName(), p.getSurname(), p.isMale(), p.getDateOfBirth(),
                 p.getPlaceOfBirth());
+    }
+
+    public static boolean test(String CF, String name, String surname, boolean isMale, LocalDate dateOfBirth,
+            CodiceCatastale placeOfBirth) {
+        return test(CF, name, surname, isMale,
+                dateOfBirth.getDayOfMonth(),
+                dateOfBirth.getMonthValue(),
+                dateOfBirth.getYear(),
+                placeOfBirth);
     }
 
     /**
@@ -269,7 +288,7 @@ public class CodiceFiscale {
      *         otherwise
      */
     public static boolean test(String CF, String name, String surname, boolean isMale, int dayOfBirth, int monthOfBirth,
-            int yearOfBirth, String placeOfBirth) {
+            int yearOfBirth, CodiceCatastale placeOfBirth) {
         try {
             verifyControlChar(CF);
         } catch (InvalidControlCodeException | WrongLengthException e) {
@@ -319,12 +338,12 @@ public class CodiceFiscale {
      * @see https://www.agenziaentrate.gov.it/portale/web/guest/schede/istanze/richiesta-ts_cf/informazioni-codificazione-pf
      * 
      */
-    private static void loopOverIndexes(int indexesToChange, List<String> CFs, char[] CF, byte maxVariations) {
+    private static void loopOverIndexes(int indexesToChange, List<String> CFs, char[] CF, int maxVariations) {
         loopOverIndexes(0, indexesToChange, new int[indexesToChange + 1], 0, CFs, CF, maxVariations);
     }
 
     private static void loopOverIndexes(int currLevel, int targetLevel, int[] idxs, int baseIndex, List<String> CFs,
-            char[] CFarr, byte maxVariations) {
+            char[] CFarr, int maxVariations) {
         for (int i = baseIndex; i < digitIdxs.length; i++) {
             if (CFs.size() > maxVariations) {
                 return;

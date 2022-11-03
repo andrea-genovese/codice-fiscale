@@ -1,7 +1,0 @@
-dev\andreagenovese\CodiceFiscale\Person.class
-module-info.class
-dev\andreagenovese\CodiceFiscale\CFUtils.class
-dev\andreagenovese\CodiceFiscale\InvalidControlCodeException.class
-dev\andreagenovese\CodiceFiscale\CodiceCatastale.class
-dev\andreagenovese\CodiceFiscale\WrongLengthException.class
-dev\andreagenovese\CodiceFiscale\CodiceFiscale.class

@@ -1,5 +1,6 @@
 package dev.andreagenovese.CodiceFiscale;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,20 +12,17 @@ public class RevertionResult {
     private String partialName;
     private String partialSurname;
     private boolean isMale;
-    private int dayOfBirth, monthOfBirth, yearOfBirth;
+    private LocalDate dateOfBirth;
     private String placeOfBirth;
     private TreeMap<Double, String> names;
     private List<String> surnames;
 
-    public RevertionResult(String partialName, String partialSurname, boolean isMale, int dayOfBirth, int monthOfBirth,
-            int yearOfBirth,
+    public RevertionResult(String partialName, String partialSurname, boolean isMale, LocalDate dateOfBirth,
             String placeOfBirth) {
         this.partialName = partialName;
         this.partialSurname = partialSurname;
         this.isMale = isMale;
-        this.dayOfBirth = dayOfBirth;
-        this.monthOfBirth = monthOfBirth;
-        this.yearOfBirth = yearOfBirth;
+        this.dateOfBirth = dateOfBirth;
         this.placeOfBirth = placeOfBirth;
         this.surnames = getSuitableSurnames(partialSurname);
         this.names = getSuitableNames(partialName, isMale);
@@ -43,12 +41,15 @@ public class RevertionResult {
         return names;
     }
 
-    private TreeMap<Double, String> getSuitableNames(String partialName, boolean isMale) {
+    private static TreeMap<Double, String> getSuitableNames(String partialName, boolean isMale) {
         Map<String, Integer> names = isMale ? Names.maleNames : Names.femaleNames;
         TreeMap<Double, String> map = new TreeMap<>(Comparator.reverseOrder());
         Map<String, Integer> suitableNames = new HashMap<>();
         int total = 0;
         for (Entry<String, Integer> entry : names.entrySet()) {
+            if(entry.getKey().equals("MARIO LUIGI")) {
+                System.out.println(entry.getValue());
+            }
             if (partialName.equals(CFUtils.calculateName(entry.getKey()))) {
                 suitableNames.put(entry.getKey(), entry.getValue());
                 total += entry.getValue();
@@ -81,16 +82,8 @@ public class RevertionResult {
         return isMale;
     }
 
-    public int getDayOfBirth() {
-        return dayOfBirth;
-    }
-
-    public int getMonthOfBirth() {
-        return monthOfBirth;
-    }
-
-    public int getYearOfBirth() {
-        return yearOfBirth;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
     public String getPlaceOfBirth() {

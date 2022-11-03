@@ -40,6 +40,7 @@ ORDER BY ?codice
 @SuppressWarnings("all")
 public class CodiceCatastale {
     private static Map<String, String> map;
+    private String code;
     static {
         map = new HashMap<String, String>();
         ClassLoader classLoader = CodiceCatastale.class.getClassLoader();
@@ -57,8 +58,9 @@ public class CodiceCatastale {
                 e.printStackTrace();
             }
         }
-
+        
     }
+    
 
     private static Map<String, String> parseFile(String fileName) throws IOException, URISyntaxException {
         Map<String, String> parsedFile = new HashMap<>();
@@ -82,24 +84,32 @@ public class CodiceCatastale {
      * insensitive)
      * 
      * 
-     * @param luogo name of the entity
+     * @param place name of the entity
      * @return The corresponding Codice Catastale
      */
-    public static String getCodiceCatastale(String luogo) {
-        return map.get(luogo.toUpperCase(Locale.ITALIAN));
+    public static CodiceCatastale fromPlaceName(String place) {
+        return new CodiceCatastale(map.get(place.toUpperCase(Locale.ITALIAN)));
     }
     /**This method returns the name of an entity based on the supplied code
      * 
      * @param code A Codice Catastale
      * @return The name of the entity
      */
-    public static String getName(String code) {
-        code = code.toUpperCase(Locale.ITALIAN);
+    public String getPlaceName() {
         for (Entry<String, String> entry : map.entrySet()) {
             if (code.equals(entry.getValue())) {
                 return entry.getKey();
             }
         }
         return null;
+    }
+    public CodiceCatastale(String code) {
+        if(code.length() != 4) {
+            throw new IllegalArgumentException("Code must be of length 4");
+        }
+        this.code = code.toUpperCase();
+    }
+    public String toString(){
+        return code;
     }
 }
