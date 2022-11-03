@@ -39,10 +39,9 @@ public class Tests {
     @Test
     public void revertion(){
         TreeMap<Double, String> names = CodiceFiscale.revert("RSSMLG99E13F205A").getNames();
-        System.out.println(names);
-        assertTrue(Names.maleNames.containsKey("MARIO LUIGI"));
+        assertTrue(Names.maleNames.containsKey("Mario Luigi"));
         assertNotNull(names);
-        assertTrue(names.containsValue("MARIO LUIGI"));
+        assertTrue(names.containsValue("Mario Luigi"));
     }
 
 }

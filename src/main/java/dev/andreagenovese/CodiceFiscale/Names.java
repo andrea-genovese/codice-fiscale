@@ -20,9 +20,7 @@ public class Names {
             femaleNames = (Map<String, Integer>) ois.readObject();
         } catch (NullPointerException | IOException | ClassNotFoundException e1) {
             e1.printStackTrace();
-
             loadNames();
-            System.out.println("Loaded from names.csv");
             try (ObjectOutputStream oos = new ObjectOutputStream(
                     new FileOutputStream("./src/main/resources/names.ser"))) {
                 oos.writeObject(maleNames);
@@ -42,14 +40,32 @@ public class Names {
                 .forEach(str -> {
                     String[] attributes = str.split(",");
                     Map<String, Integer> relevantMap = attributes[3].equals("m") ? maleNames : femaleNames;
-                    Integer prevCount = relevantMap.get(attributes[0]);
+                    String name = capitalize(attributes[0]);
+                    Integer prevCount = relevantMap.get(name);
 
                     int currCount = Integer.parseInt(attributes[2]);
                     if (prevCount == null) {
-                        relevantMap.put(attributes[0], currCount);
+                        relevantMap.put(name, currCount);
                     } else {
-                        relevantMap.put(attributes[0], prevCount + currCount);
+                        relevantMap.put(name, prevCount + currCount);
                     }
                 });
+    }
+
+    private static String capitalize(String str) {
+        String[] names = str.split(" ");
+        String result = "";
+        char[] arr = names[0].toLowerCase().toCharArray();
+        arr[0] = Character.toUpperCase(arr[0]);
+        result += new String(arr);
+        for (int i = 1; i < names.length; i++) {
+            arr = names[i].toLowerCase().toCharArray();
+            if(arr.length == 0) {
+                System.out.println(" ");
+            }
+            arr[0] = Character.toUpperCase(arr[0]);
+            result += ' ' +  new String(arr);
+        }
+        return result;
     }
 }

@@ -28,14 +28,11 @@ public class Surnames {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println();
-    }
-
     private static void loadFromCSV() {
         InputStream stream = Surnames.class.getClassLoader().getResourceAsStream("surnames.csv");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
-            list = br.lines().toList();
+            list = br.lines()
+            .toList();
         } catch (IOException e) {
             e.printStackTrace();
         }

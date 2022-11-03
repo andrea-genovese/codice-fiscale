@@ -13,12 +13,12 @@ public class RevertionResult {
     private String partialSurname;
     private boolean isMale;
     private LocalDate dateOfBirth;
-    private String placeOfBirth;
+    private CodiceCatastale placeOfBirth;
     private TreeMap<Double, String> names;
     private List<String> surnames;
 
     public RevertionResult(String partialName, String partialSurname, boolean isMale, LocalDate dateOfBirth,
-            String placeOfBirth) {
+            CodiceCatastale placeOfBirth) {
         this.partialName = partialName;
         this.partialSurname = partialSurname;
         this.isMale = isMale;
@@ -26,11 +26,6 @@ public class RevertionResult {
         this.placeOfBirth = placeOfBirth;
         this.surnames = getSuitableSurnames(partialSurname);
         this.names = getSuitableNames(partialName, isMale);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(CodiceFiscale.revert("GNVNRG01L13I690I").getSurnames());
-
     }
 
     public List<String> getSurnames() {
@@ -47,9 +42,7 @@ public class RevertionResult {
         Map<String, Integer> suitableNames = new HashMap<>();
         int total = 0;
         for (Entry<String, Integer> entry : names.entrySet()) {
-            if(entry.getKey().equals("MARIO LUIGI")) {
-                System.out.println(entry.getValue());
-            }
+          
             if (partialName.equals(CFUtils.calculateName(entry.getKey()))) {
                 suitableNames.put(entry.getKey(), entry.getValue());
                 total += entry.getValue();
@@ -86,7 +79,7 @@ public class RevertionResult {
         return dateOfBirth;
     }
 
-    public String getPlaceOfBirth() {
+    public CodiceCatastale getPlaceOfBirth() {
         return placeOfBirth;
     }
 }

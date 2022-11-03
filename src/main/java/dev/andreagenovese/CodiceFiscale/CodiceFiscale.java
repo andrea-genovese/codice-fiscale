@@ -214,7 +214,9 @@ public class CodiceFiscale {
         }
         String placeOfBirthCode = CF.substring(11, 15);
 
-        return new RevertionResult(name, surname, isMale, LocalDate.of(year, month, day), placeOfBirthCode);
+        return new RevertionResult(name, surname, isMale,
+                LocalDate.of(year, month, day),
+                new CodiceCatastale(placeOfBirthCode));
     }
 
     /**
